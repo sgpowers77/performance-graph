@@ -20,3 +20,15 @@ Open the URL printed in the terminal.
 - **High** shows every time label and gridline. Columns stay narrow and the chart scrolls sideways when it is wider than the window.
 - **Medium** keeps every point, lightens the grid, and thins time labels when columns get tight.
 - **Low** fits the whole shape to the width, with sparse time labels and the line carrying the reading.
+
+## Cloudflare Pages
+
+This is a static site. Create a new Pages project from `sgpowers77/performance-graph`. Leave any existing project, including trailmenu, unchanged.
+
+- Framework preset: None
+- Build command: `npm run build`
+- Build output directory: `out`
+- Production branch: `main`
+- Node.js version: 22
+
+`npm run build` writes the site to `out/`. Do not use the Next.js preset. That preset expects a server build. Each visitor's graph stays in their browser.
