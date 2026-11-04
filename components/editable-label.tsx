@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { X } from "lucide-react";
 import { cn } from "cn";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 type EditableLabelProps = {
@@ -14,13 +12,10 @@ type EditableLabelProps = {
   onEditStart: () => void;
   onCommit: (value: string) => void;
   onCancel: () => void;
-  onDelete?: () => void;
-  deleteLabel?: string;
   className?: string;
   textClassName?: string;
   inputClassName?: string;
   truncate?: boolean;
-  deleteClassName?: string;
 };
 
 export function EditableLabel({
@@ -30,13 +25,10 @@ export function EditableLabel({
   onEditStart,
   onCommit,
   onCancel,
-  onDelete,
-  deleteLabel,
   className,
   textClassName,
   inputClassName,
   truncate = true,
-  deleteClassName,
 }: EditableLabelProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const cancelRef = useRef(false);
@@ -71,6 +63,7 @@ export function EditableLabel({
             onCommit(draft);
           } else if (event.key === "Escape") {
             event.preventDefault();
+            event.stopPropagation();
             cancelRef.current = true;
             onCancel();
           }
@@ -81,7 +74,7 @@ export function EditableLabel({
   }
 
   return (
-    <div className={cn("group/label relative flex min-w-0 items-center", className)}>
+    <div className={cn("flex min-w-0 items-center", className)}>
       <button
         type="button"
         onClick={() => {
@@ -96,21 +89,6 @@ export function EditableLabel({
       >
         {value}
       </button>
-      {onDelete ? (
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-xs"
-          aria-label={deleteLabel}
-          onClick={onDelete}
-          className={cn(
-            "absolute top-1/2 z-10 -translate-y-1/2 bg-card opacity-0 group-hover/label:opacity-100 focus-visible:opacity-100",
-            deleteClassName ?? "-right-1",
-          )}
-        >
-          <X />
-        </Button>
-      ) : null}
     </div>
   );
 }

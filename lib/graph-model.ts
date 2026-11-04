@@ -140,6 +140,44 @@ export function removeTime(state: GraphState, id: string): GraphState {
   };
 }
 
+function moveItem<T>(items: readonly T[], from: number, toIndex: number): T[] | null {
+  if (from < 0 || items.length === 0) return null;
+  const to = Math.max(0, Math.min(items.length - 1, toIndex));
+  if (from === to) return null;
+  const next = items.slice();
+  const [item] = next.splice(from, 1);
+  next.splice(to, 0, item);
+  return next;
+}
+
+export function reorderTime(
+  state: GraphState,
+  id: string,
+  toIndex: number,
+): GraphState {
+  const times = moveItem(
+    state.times,
+    state.times.findIndex((time) => time.id === id),
+    toIndex,
+  );
+  if (!times) return state;
+  return { ...state, times };
+}
+
+export function reorderTier(
+  state: GraphState,
+  id: string,
+  toIndex: number,
+): GraphState {
+  const tiers = moveItem(
+    state.tiers,
+    state.tiers.findIndex((tier) => tier.id === id),
+    toIndex,
+  );
+  if (!tiers) return state;
+  return { ...state, tiers };
+}
+
 export function removeTier(state: GraphState, id: string): GraphState {
   if (state.tiers.length <= MIN_AXIS_COUNT) return state;
   const index = state.tiers.findIndex((tier) => tier.id === id);
@@ -166,6 +204,30 @@ export function setPoint(
 
 export function allPointsCleared(state: GraphState): boolean {
   return state.times.every((time) => !state.points[time.id]);
+}
+
+export function clearPoints(state: GraphState): GraphState {
+  if (allPointsCleared(state)) return state;
+  const points: Record<string, string | null> = {};
+  for (const time of state.times) points[time.id] = null;
+  return { ...state, points };
+}
+
+export function parseGraphFile(text: string): GraphState | null {
+  try {
+    return sanitizeGraph(JSON.parse(text));
+  } catch {
+    return null;
+  }
+}
+
+export function graphFileName(state: GraphState): string {
+  const slug = state.title
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  return `${slug || "performance"}.json`;
 }
 
 export function tierIndex(state: GraphState, tierId: string | null): number {
