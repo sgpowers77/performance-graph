@@ -13,7 +13,6 @@ import {
   pointPosition,
   tierIdAtY,
   tierIndex,
-  timeLabelVisible,
   type ChartMetrics,
   type EditTarget,
   type GraphState,
@@ -489,19 +488,14 @@ export function PerformanceGraph({
               style={{ height: footerHeight }}
             >
               {state.times.map((time, index) => {
-                const visible = timeLabelVisible(
-                  index,
-                  state.times.length,
-                  resolution,
-                  metrics.columnWidth,
-                );
                 const tightColumn = metrics.columnWidth < 44;
+                const narrowLabel = metrics.columnWidth < 56;
                 return (
                   <div
                     key={time.id}
                     id={`time-label-${time.id}`}
                     className={cn(
-                      "group/time absolute top-1 flex touch-none flex-col items-center gap-0.5 px-0.5",
+                      "group/time absolute top-1 flex touch-none flex-col items-center gap-0.5 overflow-hidden px-0.5",
                       draggingId === time.id && "rounded-md bg-accent/80",
                     )}
                     style={{
@@ -518,26 +512,27 @@ export function PerformanceGraph({
                     >
                       <GripHorizontal className="size-3.5" />
                     </span>
-                    {visible ? (
-                      <EditableLabel
-                        value={time.label}
-                        editing={
-                          editing?.type === "time" && editing.id === time.id
-                        }
-                        ariaLabel={`Time increment ${time.label}`}
-                        onEditStart={() => onEdit({ type: "time", id: time.id })}
-                        onCommit={(value) =>
-                          onCommit({ type: "time", id: time.id }, value)
-                        }
-                        onCancel={onCancelEdit}
-                        className="max-w-full justify-center"
-                        truncate={false}
-                        textClassName="text-center text-xs text-muted-foreground sm:text-sm"
-                        inputClassName="text-center text-xs sm:text-sm"
-                      />
-                    ) : (
-                      <span className="sr-only">{time.label}</span>
-                    )}
+                    <EditableLabel
+                      value={time.label}
+                      editing={
+                        editing?.type === "time" && editing.id === time.id
+                      }
+                      ariaLabel={`Time increment ${time.label}`}
+                      onEditStart={() => onEdit({ type: "time", id: time.id })}
+                      onCommit={(value) =>
+                        onCommit({ type: "time", id: time.id }, value)
+                      }
+                      onCancel={onCancelEdit}
+                      className="w-full max-w-full justify-center"
+                      truncate={narrowLabel}
+                      textClassName={cn(
+                        "w-full text-center text-muted-foreground",
+                        narrowLabel
+                          ? "text-[10px] leading-4"
+                          : "text-xs sm:text-sm",
+                      )}
+                      inputClassName="text-center text-xs sm:text-sm"
+                    />
                     {canRemoveTime ? (
                       <RemoveAxisButton
                         label={`Remove ${time.label}`}

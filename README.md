@@ -18,8 +18,8 @@ Open the URL printed in the terminal.
 ## Resolution
 
 - **High** shows every time label and gridline. Columns stay narrow and the chart scrolls sideways when it is wider than the window.
-- **Medium** keeps every point, lightens the grid, and thins time labels when columns get tight.
-- **Low** fits the whole shape to the width, with sparse time labels and the line carrying the reading.
+- **Medium** keeps every point and every time label, and lightens the grid.
+- **Low** fits the whole shape to the width. Every column still has its label.
 
 ## Cloudflare Pages
 

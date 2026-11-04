@@ -313,26 +313,6 @@ export function chartMetrics(
   };
 }
 
-export function timeLabelVisible(
-  index: number,
-  count: number,
-  resolution: Resolution,
-  columnWidth: number,
-): boolean {
-  if (count <= 1 || resolution === "high") return true;
-  const stride =
-    resolution === "low"
-      ? Math.max(count <= 4 ? 1 : 2, Math.ceil(96 / Math.max(columnWidth, 1)))
-      : columnWidth >= 80
-        ? 1
-        : columnWidth >= 52
-          ? 2
-          : 3;
-  if (stride <= 1) return true;
-  if (index === 0 || index === count - 1) return true;
-  return index % stride === 0;
-}
-
 export function pointPosition(
   timeIndex: number,
   tierIndexValue: number,
